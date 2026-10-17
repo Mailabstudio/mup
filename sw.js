@@ -1,5 +1,5 @@
 // mup! — service worker: funciona sin conexión y envía el resumen diario de avisos
-const CACHE = 'mup-v12';
+const CACHE = 'mup-v13';
 const DATA = 'mup-data';            // aquí la app deja una copia de las tareas para poder avisar
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png', './favicon.png'];
 
