@@ -857,7 +857,18 @@ const stay = () => { $('#exit').classList.remove('on'); trap(); };
 $('#exStay').onclick = stay; $('#exit .sc').onclick = stay;
 $('#exGo').onclick = () => { leaving = true; history.back(); try { window.close(); } catch(e){}
   setTimeout(()=>{ if (document.visibilityState==='visible') { $('#exit').classList.remove('on'); leaving = false; M.toast('Pulsa «Atrás» otra vez para salir'); } }, 400); };
-if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(()=>{});
+/* ---- Actualizaciones automáticas: busca versión nueva al abrir y se recarga sola ---- */
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+  const hadCtrl = !!navigator.serviceWorker.controller; let reloaded = false;
+  navigator.serviceWorker.register('sw.js', { updateViaCache:'none' }).then(r => {
+    r.update().catch(()=>{});
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState==='visible') r.update().catch(()=>{}); });
+  }).catch(()=>{});
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!hadCtrl || reloaded || M.current) return; reloaded = true;
+    M.toast('Actualizando mup!…'); setTimeout(() => location.reload(), 700);
+  });
+}
 // deslizar sobre la fecha
 (() => { let x0=null; const el = $('#bDate');
   el.addEventListener('touchstart', e=>{ x0 = e.touches[0].clientX; }, {passive:true});

@@ -1,5 +1,5 @@
 // mup! — service worker: funciona sin conexión y envía el resumen diario de avisos
-const CACHE = 'mup-v11';
+const CACHE = 'mup-v12';
 const DATA = 'mup-data';            // aquí la app deja una copia de las tareas para poder avisar
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png', './favicon.png'];
 
@@ -17,7 +17,7 @@ self.addEventListener('fetch', e => {
   if (req.url.includes('__mup-')) return;
   // La página: primero red (para recibir actualizaciones), si no hay conexión, la copia guardada
   if (req.mode === 'navigate') {
-    e.respondWith(fetch(req).then(res => { const c = res.clone(); caches.open(CACHE).then(ca => ca.put('./index.html', c)); return res; })
+    e.respondWith(fetch(req, { cache:'no-store' }).then(res => { const c = res.clone(); caches.open(CACHE).then(ca => ca.put('./index.html', c)); return res; })
       .catch(() => caches.match('./index.html')));
     return;
   }
